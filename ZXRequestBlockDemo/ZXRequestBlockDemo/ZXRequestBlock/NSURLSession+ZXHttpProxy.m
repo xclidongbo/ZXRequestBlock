@@ -1,10 +1,11 @@
 //
 //  NSURLSession+ZXHttpProxy.m
-//  ZXRequestBlockDemo
+//  ZXRequestBlock
 //
 //  Created by 李兆祥 on 2019/4/10.
 //  Copyright © 2019 李兆祥. All rights reserved.
-//
+//  https://github.com/SmileZXLee/ZXRequestBlock
+//  V1.0.3
 
 #import "NSURLSession+ZXHttpProxy.h"
 #import "ZXURLProtocol.h"
@@ -13,6 +14,8 @@ static BOOL isDisableHttpProxy = NO;
 @implementation NSURLSession (ZXHttpProxy)
 +(void)load{
     [super load];
+#if DEBUG
+#else
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [NSURLProtocol registerClass:[ZXURLProtocol class]];
@@ -20,6 +23,7 @@ static BOOL isDisableHttpProxy = NO;
         [self swizzingMethodWithClass:class orgSel:NSSelectorFromString(@"sessionWithConfiguration:") swiSel:NSSelectorFromString(@"zx_sessionWithConfiguration:")];
         [self swizzingMethodWithClass:class orgSel:NSSelectorFromString(@"sessionWithConfiguration:delegate:delegateQueue:") swiSel:NSSelectorFromString(@"zx_sessionWithConfiguration:delegate:delegateQueue:")];
     });
+#endif
 }
 +(void)disableHttpProxy{
     isDisableHttpProxy = YES;
